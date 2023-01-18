@@ -12,3 +12,10 @@ import com.nrkei.microprocess.command.Task
 internal class TestTask(private val status: ExecutionStatus) : Task {
     override fun execute() = status
 }
+
+internal object CrashingTask : Task {
+    override fun execute(): ExecutionStatus {
+        throw IllegalArgumentException("deliberate crash")
+    }
+
+}

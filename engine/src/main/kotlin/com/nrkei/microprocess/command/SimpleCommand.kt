@@ -6,7 +6,14 @@
 
 package com.nrkei.microprocess.command
 
+import com.nrkei.microprocess.command.ExecutionStatus.FAILED
+
 // Understands the execution of a single Task
 class SimpleCommand(private val task: Task) : Command {
-    override fun execute() = task.execute()
+    override fun execute() =
+        try {
+            task.execute()
+        } catch (e: Exception) {
+            FAILED
+        }
 }
