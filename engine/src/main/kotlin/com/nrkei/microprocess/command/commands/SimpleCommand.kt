@@ -4,9 +4,9 @@
  * Licensed under the MIT License; see LICENSE file in root.
  */
 
-package com.nrkei.microprocess.command
+package com.nrkei.microprocess.command.commands
 
-import com.nrkei.microprocess.command.ExecutionStatus.FAILED
+import com.nrkei.microprocess.command.commands.ExecutionStatus.FAILED
 
 // Understands the execution of a single Task
 class SimpleCommand(private val task: Task) : Command {

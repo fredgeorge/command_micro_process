@@ -4,15 +4,17 @@
  * Licensed under the MIT License; see LICENSE file in root.
  */
 
-package com.nrkei.microprocess.command
+package com.nrkei.microprocess.command.unit
 
-import com.nrkei.microprocess.command.ExecutionStatus.*
-import com.nrkei.microprocess.command.ExecutionStatus.FAILED
+import com.nrkei.microprocess.command.commands.ExecutionStatus.*
+import com.nrkei.microprocess.command.commands.ExecutionStatus.FAILED
+import com.nrkei.microprocess.command.commands.SimpleCommand
 import com.nrkei.microprocess.command.util.CrashingTask
 import com.nrkei.microprocess.command.util.TestTask
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
+// Ensures SimpleCommands operate correctly
 internal class SimpleCommandTest {
 
     @Test fun success() {

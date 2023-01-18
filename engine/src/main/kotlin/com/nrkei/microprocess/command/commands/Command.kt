@@ -4,7 +4,7 @@
  * Licensed under the MIT License; see LICENSE file in root.
  */
 
-package com.nrkei.microprocess.command
+package com.nrkei.microprocess.command.commands
 
 // Understands something that can be done (and undone)
 interface Command {
