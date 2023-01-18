@@ -6,14 +6,18 @@
 
 package com.nrkei.microprocess.command
 
+import com.nrkei.microprocess.command.ExecutionStatus.SUCCEEDED
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
-// Ensures Rectangle operates correctly
-internal class RectangleTest {
+internal class SimpleCommandTest {
 
-    @Test
-    fun area() {
-        assertEquals(24.0, Rectangle(4.0, 6.0).area())
+    @Test fun execution() {
+        assertEquals(SUCCEEDED, TestCommand().execute())
+    }
+
+    private class TestCommand : Command {
+        override fun execute() = SUCCEEDED
+
     }
 }

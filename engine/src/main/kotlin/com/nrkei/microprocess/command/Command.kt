@@ -6,7 +6,10 @@
 
 package com.nrkei.microprocess.command
 
-// Understands a four-sided polygon with sides at right angles
-class Rectangle(private val length: Double, private val width: Double) {
-    fun area() = length * width
+interface Command {
+    fun execute(): ExecutionStatus
+}
+
+enum class ExecutionStatus {
+    SUCCEEDED, FAILED, SUSPENDED
 }
