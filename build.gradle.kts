@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 by Fred George
+ * Copyright (c) 2023 by Fred George
  * @author Fred George  fredgeorge@acm.org
  * Licensed under the MIT License; see LICENSE file in root.
  */
@@ -14,5 +14,5 @@ repositories {
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
-    kotlin("jvm") version "1.7.21"
+    kotlin("jvm") version "1.8.0"
 }

@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2022 by Fred George
+ * Copyright (c) 2023 by Fred George
  * @author Fred George  fredgeorge@acm.org
  * Licensed under the MIT License; see LICENSE file in root.
  */
 
-package com.nrkei.project.template
+package com.nrkei.microprocess.command
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
