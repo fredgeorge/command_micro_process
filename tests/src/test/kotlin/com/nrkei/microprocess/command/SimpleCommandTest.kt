@@ -8,21 +8,21 @@ package com.nrkei.microprocess.command
 
 import com.nrkei.microprocess.command.ExecutionStatus.*
 import com.nrkei.microprocess.command.ExecutionStatus.FAILED
-import com.nrkei.microprocess.command.util.TestCommand
+import com.nrkei.microprocess.command.util.TestTask
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 internal class SimpleCommandTest {
 
     @Test fun success() {
-        assertEquals(SUCCEEDED, TestCommand(SUCCEEDED).execute())
+        assertEquals(SUCCEEDED, SimpleCommand(TestTask(SUCCEEDED)).execute())
     }
 
     @Test fun failure() {
-        assertEquals(FAILED, TestCommand(FAILED).execute())
+        assertEquals(FAILED, SimpleCommand(TestTask(FAILED)).execute())
     }
 
     @Test fun suspension() {
-        assertEquals(SUSPENDED, TestCommand(SUSPENDED).execute())
+        assertEquals(SUSPENDED, SimpleCommand(TestTask(SUSPENDED)).execute())
     }
 }

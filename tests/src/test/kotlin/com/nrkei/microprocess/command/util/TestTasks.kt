@@ -6,9 +6,9 @@
 
 package com.nrkei.microprocess.command.util
 
-import com.nrkei.microprocess.command.Command
 import com.nrkei.microprocess.command.ExecutionStatus
+import com.nrkei.microprocess.command.Task
 
-internal class TestCommand(private val status: ExecutionStatus) : Command {
+internal class TestTask(private val status: ExecutionStatus) : Task {
     override fun execute() = status
 }

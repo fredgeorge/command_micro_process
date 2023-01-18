@@ -12,6 +12,10 @@ proceed in a sequential fashion. The next step in the process should
 not be attempted until the prior step is successful. This models many
 typical business processes such as account setup.
 
+This framework separates doing the work (via Tasks) and the flow of
+the work (via Commands and sequences of Commands). This separation of
+concerns facilitates customization and reduces coupling.
+
 ### Framework Setup
 
 Kotlin is relatively easy to setup with IntelliJ IDEA. 
@@ -48,7 +52,8 @@ Run all the unit tests.
 This MicroProcess framework extensively exploits Design Patterns (GoF).
 The base pattern is Command, an encapsulation of code to be executed at 
 some point in the future. Since it understands that execution, it is 
-also responsible for reversing that execution, if necessary (and possible).
+also responsible for reversing that execution, if necessary (and 
+possible).
 
 Commands can be chained together to build sequences. Here we also want
 to support a Command that itself is another sequence of Commands. Hence

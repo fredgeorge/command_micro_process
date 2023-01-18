@@ -6,10 +6,16 @@
 
 package com.nrkei.microprocess.command
 
+// Understands something that can be done (and undone)
 interface Command {
     fun execute(): ExecutionStatus
 }
 
+interface Task {
+    fun execute(): ExecutionStatus
+}
+
+// Understands the results of Command Execution
 enum class ExecutionStatus {
     SUCCEEDED, FAILED, SUSPENDED
 }
