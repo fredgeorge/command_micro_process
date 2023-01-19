@@ -13,12 +13,18 @@ import com.nrkei.microprocess.command.commands.SimpleCommand.CommandState
 import com.nrkei.microprocess.command.commands.Task
 
 internal class TestAnalysis(command: Command) : CommandVisitor {
-    internal var successfulCount = 0
+    internal val tasks = mutableMapOf<CommandState, MutableList<Task>>()
     init {
         command.accept(this)
     }
 
     override fun visit(command: SimpleCommand, state: CommandState, executionTask: Task) {
-        successfulCount += (executionTask as TestTask).executionCount
+        tasks.putIfAbsent(state, mutableListOf())
+        tasks[state]?.add(executionTask)
+    }
+
+    internal operator fun get(state: CommandState): List<Task> {
+        tasks.putIfAbsent(state, mutableListOf())
+        return tasks[state]!!
     }
 }

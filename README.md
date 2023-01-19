@@ -50,22 +50,26 @@ Run all the unit tests.
 ### Framework Design
 
 This MicroProcess framework extensively exploits Design Patterns (GoF).
-The base pattern is Command, an encapsulation of code to be executed at 
-some point in the future. Since it understands that execution, it is 
-also responsible for reversing that execution, if necessary (and 
-possible).
+The base pattern is Command Pattern (GoF, an encapsulation of code to 
+be executed at some point in the future. Since it understands that 
+execution, it is also responsible for reversing that execution, if 
+necessary (and possible).
 
 Commands can be chained together to build sequences. Here we also want
 to support a Command that itself is another sequence of Commands. Hence
-the Composite pattern is used. A Composite Command pattern is also known
-as a Macro.
+the Composite Pattern (GoF) is used. A Composite Command pattern is 
+also known as a Macro.
 
 We want to be able to suspend a Command sequence if we need to wait
 for an asynchronous operation to complete. To facilitate resumption, we
 restart the sequence, skipping over Commands that are already complete.
 So we need to remember whether a Command has been executed already; we 
-exploit a State pattern for this.
+exploit a State Pattern (GoF) for this.
 
 A Command can succeed, fail, or be suspended. If a Command in a sequence
 fails, all prior Commands in the sequence will be _undone_, starting
 with the last Command to successfully execute.
+
+For inspection, analysis, persistence, and other functions against a 
+Command hierarchy, we use a Visitor Pattern (GoF). In testing, the 
+visitor can sweep through the hierarchy and collect state.
