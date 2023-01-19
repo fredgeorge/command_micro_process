@@ -6,7 +6,7 @@
 
 package com.nrkei.microprocess.command.unit
 
-import com.nrkei.microprocess.command.commands.ExecutionStatus.SUCCEEDED
+import com.nrkei.microprocess.command.commands.ExecutionResult.SUCCEEDED
 import com.nrkei.microprocess.command.dsl.sequence
 import com.nrkei.microprocess.command.util.TestLabel.SUCCESSFUL_RECOVERY
 import com.nrkei.microprocess.command.util.TestLabel.SUCCESSFUL_TASK

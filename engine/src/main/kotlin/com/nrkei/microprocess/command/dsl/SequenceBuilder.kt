@@ -11,7 +11,7 @@ import com.nrkei.microprocess.command.commands.SequenceCommand
 import com.nrkei.microprocess.command.commands.SimpleCommand
 import com.nrkei.microprocess.command.commands.Task
 
-fun sequence(block: SequenceBuilder.() -> Unit) =
+fun sequence(block: SequenceBuilder.() -> Unit) : Command =
     SequenceBuilder()
         .also { it.block() }.result()
 

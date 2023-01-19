@@ -6,11 +6,10 @@
 
 package com.nrkei.microprocess.command.unit
 
-import com.nrkei.microprocess.command.commands.ExecutionStatus.*
-import com.nrkei.microprocess.command.commands.ExecutionStatus.FAILED
-import com.nrkei.microprocess.command.commands.SimpleCommand
-import com.nrkei.microprocess.command.util.CrashingTask
-import com.nrkei.microprocess.command.util.TestTask
+import com.nrkei.microprocess.command.commands.ExecutionResult.*
+import com.nrkei.microprocess.command.dsl.TaskLabel
+import com.nrkei.microprocess.command.dsl.sequence
+import com.nrkei.microprocess.command.util.TestLabel.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -18,18 +17,23 @@ import org.junit.jupiter.api.Test
 internal class SimpleCommandTest {
 
     @Test fun success() {
-        assertEquals(SUCCEEDED, SimpleCommand(TestTask(SUCCEEDED)).execute())
+        assertEquals(SUCCEEDED, simpleCommand(SUCCESSFUL_TASK).execute())
     }
 
     @Test fun failure() {
-        assertEquals(FAILED, SimpleCommand(TestTask(FAILED)).execute())
+        assertEquals(FAILED, simpleCommand(FAILED_TASK).execute())
     }
 
     @Test fun suspension() {
-        assertEquals(SUSPENDED, SimpleCommand(TestTask(SUSPENDED)).execute())
+        assertEquals(SUSPENDED, simpleCommand(SUSPENDED_TASK).execute())
     }
 
     @Test fun crashed() {
-        assertEquals(FAILED, SimpleCommand(CrashingTask).execute())
+        assertEquals(FAILED, simpleCommand(CRASHED_TASK).execute())
     }
+
+    private fun simpleCommand(executionLabel: TaskLabel) =
+        sequence {
+            first perform executionLabel otherwise executionLabel
+        }
 }
