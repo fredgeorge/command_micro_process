@@ -7,10 +7,12 @@
 package com.nrkei.microprocess.command.commands
 
 import com.nrkei.microprocess.command.commands.ExecutionResult.*
+import com.nrkei.microprocess.command.commands.SimpleCommand.CommandState.NOT_EXECUTED
+import com.nrkei.microprocess.command.commands.SimpleCommand.CommandState.SUCCESSFUL
 
 // Understands the execution of a single Task
 class SimpleCommand internal constructor(private val task: Task) : Command {
-    private var state: State = Initial
+    private var state: State = NotExecuted
 
     override fun execute() = state.execute(this)
 
@@ -29,26 +31,36 @@ class SimpleCommand internal constructor(private val task: Task) : Command {
         }
 
     override fun accept(visitor: CommandVisitor) {
-        visitor.visit(this, task)
+        visitor.visit(this, state.commandState, task)
     }
 
-    private interface State {
+    enum class CommandState {
+        NOT_EXECUTED, SUCCESSFUL, FAILED, SUSPENDED
+    }
+
+    interface State {
+        val commandState: CommandState
         fun execute(command: SimpleCommand): ExecutionResult
     }
 
-    object Initial: State {
+    object NotExecuted: State {
+        override val commandState = NOT_EXECUTED
         override fun execute(command: SimpleCommand) = command.executeTask()
     }
 
     object Successful: State {
+        override val commandState = SUCCESSFUL
         override fun execute(command: SimpleCommand) = SUCCEEDED
     }
 
     object Failed: State {
+        override val commandState = CommandState.FAILED
+
         override fun execute(command: SimpleCommand) = FAILED
     }
 
     object Suspended: State {
+        override val commandState = CommandState.SUSPENDED
         override fun execute(command: SimpleCommand) = command.executeTask()
     }
 }

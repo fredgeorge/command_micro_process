@@ -9,6 +9,7 @@ package com.nrkei.microprocess.command.util
 import com.nrkei.microprocess.command.commands.Command
 import com.nrkei.microprocess.command.commands.CommandVisitor
 import com.nrkei.microprocess.command.commands.SimpleCommand
+import com.nrkei.microprocess.command.commands.SimpleCommand.CommandState
 import com.nrkei.microprocess.command.commands.Task
 
 internal class TestAnalysis(command: Command) : CommandVisitor {
@@ -17,7 +18,7 @@ internal class TestAnalysis(command: Command) : CommandVisitor {
         command.accept(this)
     }
 
-    override fun visit(command: SimpleCommand, executionTask: Task) {
+    override fun visit(command: SimpleCommand, state: CommandState, executionTask: Task) {
         successfulCount += (executionTask as TestTask).executionCount
     }
 }
