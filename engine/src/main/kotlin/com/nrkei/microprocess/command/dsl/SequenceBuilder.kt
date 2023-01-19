@@ -32,4 +32,12 @@ class SequenceBuilder {
     infix fun otherwise(undoLabel: TaskLabel) {
         commands.add(SimpleCommand(executionTask))
     }
+
+    infix fun reversal(unnecessary: UnnecessaryPlaceHolder) {
+        commands.add(SimpleCommand(executionTask))
+    }
+
+    enum class UnnecessaryPlaceHolder {
+        unnecessary
+    }
 }

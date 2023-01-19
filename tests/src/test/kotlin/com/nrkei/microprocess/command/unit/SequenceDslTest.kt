@@ -8,6 +8,7 @@ package com.nrkei.microprocess.command.unit
 
 import com.nrkei.microprocess.command.commands.ExecutionResult.SUCCEEDED
 import com.nrkei.microprocess.command.commands.SimpleCommand.CommandState
+import com.nrkei.microprocess.command.dsl.SequenceBuilder.UnnecessaryPlaceHolder.unnecessary
 import com.nrkei.microprocess.command.dsl.sequence
 import com.nrkei.microprocess.command.util.TestAnalysis
 import com.nrkei.microprocess.command.util.TestLabel.SUCCESSFUL_RECOVERY
@@ -21,7 +22,7 @@ internal class SequenceDslTest {
     @Test fun `All tasks succeed`() {
         sequence {
             first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
-            next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            next perform SUCCESSFUL_TASK reversal unnecessary
             next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
         }.also { command ->
             assertEquals(3, TestAnalysis(command)[CommandState.NOT_EXECUTED].size)
