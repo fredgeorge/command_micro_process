@@ -9,6 +9,7 @@ package com.nrkei.microprocess.command.unit
 import com.nrkei.microprocess.command.commands.ExecutionResult.*
 import com.nrkei.microprocess.command.dsl.TaskLabel
 import com.nrkei.microprocess.command.dsl.sequence
+import com.nrkei.microprocess.command.util.TestAnalysis
 import com.nrkei.microprocess.command.util.TestLabel.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
@@ -30,6 +31,15 @@ internal class SimpleCommandTest {
 
     @Test fun crashed() {
         assertEquals(FAILED, simpleCommand(CRASHED_TASK).execute())
+    }
+
+    @Test fun `executes only once`() {
+        simpleCommand(SUCCESSFUL_TASK).also { command ->
+            assertEquals(SUCCEEDED, command.execute())
+            assertEquals(1, TestAnalysis(command).successfulCount)
+            assertEquals(SUCCEEDED, command.execute())
+            assertEquals(1, TestAnalysis(command).successfulCount)
+        }
     }
 
     private fun simpleCommand(executionLabel: TaskLabel) =

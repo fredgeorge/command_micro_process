@@ -9,6 +9,7 @@ package com.nrkei.microprocess.command.commands
 // Understands something that can be done (and undone)
 interface Command {
     fun execute(): ExecutionResult
+    fun accept(visitor: CommandVisitor)
 }
 
 interface Task {
