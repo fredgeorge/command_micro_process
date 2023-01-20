@@ -40,7 +40,7 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
                 TASK_SUSPENDED -> ReversalFailed  // Maybe support this?
             }
             state.commandResult
-        } finally {
+        } catch (e: Exception) {
             state = ReversalFailed
             REVERSAL_FAILED
         }
@@ -52,36 +52,37 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
     interface State {
         val commandResult: ExecutionResult
         fun execute(command: SimpleCommand): ExecutionResult
-        fun undo(command: SimpleCommand): ExecutionResult = throw IllegalStateException("Undo is not valid at this point")
+        fun undo(command: SimpleCommand): ExecutionResult =
+            throw IllegalStateException("Undo is not valid at this point")
     }
 
-    object NotExecuted: State {
+    object NotExecuted : State {
         override val commandResult = NOT_EXECUTED
         override fun execute(command: SimpleCommand) = command.executeTask()
     }
 
-    object Successful: State {
+    object Successful : State {
         override val commandResult = SUCCEEDED
         override fun execute(command: SimpleCommand) = SUCCEEDED
         override fun undo(command: SimpleCommand) = command.undoTask()
     }
 
-    object Failed: State {
+    object Failed : State {
         override val commandResult = FAILED
         override fun execute(command: SimpleCommand) = FAILED
     }
 
-    object Suspended: State {
+    object Suspended : State {
         override val commandResult = SUSPENDED
         override fun execute(command: SimpleCommand) = command.executeTask()
     }
 
-    object Reversed: State {
+    object Reversed : State {
         override val commandResult = REVERSED
         override fun execute(command: SimpleCommand) = FAILED
     }
 
-    object ReversalFailed: State {
+    object ReversalFailed : State {
         override val commandResult = REVERSAL_FAILED
         override fun execute(command: SimpleCommand) = FAILED
     }

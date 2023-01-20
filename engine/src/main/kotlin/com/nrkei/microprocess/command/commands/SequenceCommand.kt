@@ -20,8 +20,17 @@ class SequenceCommand internal constructor(private val commands: List<Command>) 
         if (commands.isEmpty()) return SUCCEEDED
         commands.removeAt(0).also { currentCommand ->
             return when (currentCommand.execute()) {
-                NOT_EXECUTED -> throw IllegalStateException("Invalid execution result of NOT_EXECUTED")
-                SUCCEEDED -> execute(commands)
+                NOT_EXECUTED -> throw IllegalStateException("Invalid execution result of NOT_EXECUTED for current command")
+                SUCCEEDED -> {
+                    when (execute(commands)) {
+                        NOT_EXECUTED -> throw IllegalStateException("Invalid execution result of NOT_EXECUTED for children")
+                        SUCCEEDED -> SUCCEEDED
+                        FAILED -> currentCommand.undo()
+                        SUSPENDED -> SUSPENDED
+                        REVERSED -> currentCommand.undo()
+                        REVERSAL_FAILED -> REVERSAL_FAILED.also { currentCommand.undo() }
+                    }
+                }
                 FAILED -> FAILED
                 SUSPENDED -> SUSPENDED
                 REVERSED -> currentCommand.undo()

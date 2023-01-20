@@ -41,9 +41,24 @@ internal class SequenceDslTest {
             assertEquals(4, TestAnalysis(command)[NOT_EXECUTED].size)
             assertEquals(0, TestAnalysis(command)[SUCCEEDED].size)
             assertEquals(0, TestAnalysis(command)[FAILED].size)
-            assertEquals(FAILED, command.execute())
+            assertEquals(REVERSED, command.execute())
             assertEquals(1, TestAnalysis(command)[NOT_EXECUTED].size)
-            assertEquals(2, TestAnalysis(command)[SUCCEEDED].size)
+            assertEquals(2, TestAnalysis(command)[REVERSED].size)
+            assertEquals(1, TestAnalysis(command)[FAILED].size)
+        }
+    }
+
+    @Test fun `Fourth task fails - third task reversal fails`() {
+        sequence {
+            first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            next perform SUCCESSFUL_TASK reversal unnecessary
+            next perform SUCCESSFUL_TASK otherwise FAILED_RECOVERY
+            next perform FAILED_TASK otherwise SUCCESSFUL_RECOVERY
+        }.also { command ->
+            assertEquals(REVERSAL_FAILED, command.execute())
+            assertEquals(0, TestAnalysis(command)[NOT_EXECUTED].size)
+            assertEquals(2, TestAnalysis(command)[REVERSED].size)
+            assertEquals(1, TestAnalysis(command)[REVERSAL_FAILED].size)
             assertEquals(1, TestAnalysis(command)[FAILED].size)
         }
     }
