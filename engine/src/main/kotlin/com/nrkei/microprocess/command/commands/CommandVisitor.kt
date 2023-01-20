@@ -6,10 +6,8 @@
 
 package com.nrkei.microprocess.command.commands
 
-import com.nrkei.microprocess.command.commands.SimpleCommand.CommandState
-
 interface CommandVisitor {
     fun preVisit(command: SequenceCommand, subCommandCount: Int) { }
-    fun visit(command: SimpleCommand, state: CommandState, executionTask: Task) { }
+    fun visit(command: SimpleCommand, state: ExecutionResult, executionTask: Task) { }
     fun postVisit(command: SequenceCommand) { }
 }

@@ -6,24 +6,20 @@
 
 package com.nrkei.microprocess.command.util
 
-import com.nrkei.microprocess.command.commands.Command
-import com.nrkei.microprocess.command.commands.CommandVisitor
-import com.nrkei.microprocess.command.commands.SimpleCommand
-import com.nrkei.microprocess.command.commands.SimpleCommand.CommandState
-import com.nrkei.microprocess.command.commands.Task
+import com.nrkei.microprocess.command.commands.*
 
 internal class TestAnalysis(command: Command) : CommandVisitor {
-    internal val tasks = mutableMapOf<CommandState, MutableList<Task>>()
+    internal val tasks = mutableMapOf<ExecutionResult, MutableList<Task>>()
     init {
         command.accept(this)
     }
 
-    override fun visit(command: SimpleCommand, state: CommandState, executionTask: Task) {
+    override fun visit(command: SimpleCommand, state: ExecutionResult, executionTask: Task) {
         tasks.putIfAbsent(state, mutableListOf())
         tasks[state]?.add(executionTask)
     }
 
-    internal operator fun get(state: CommandState): List<Task> {
+    internal operator fun get(state: ExecutionResult): List<Task> {
         tasks.putIfAbsent(state, mutableListOf())
         return tasks[state]!!
     }

@@ -10,6 +10,7 @@ import com.nrkei.microprocess.command.commands.Command
 import com.nrkei.microprocess.command.commands.SequenceCommand
 import com.nrkei.microprocess.command.commands.SimpleCommand
 import com.nrkei.microprocess.command.commands.Task
+import com.nrkei.microprocess.command.commands.TaskResult.TASK_SUCCEEDED
 
 fun sequence(block: SequenceBuilder.() -> Unit) : Command =
     SequenceBuilder()
@@ -30,14 +31,18 @@ class SequenceBuilder {
     }
 
     infix fun otherwise(undoLabel: TaskLabel) {
-        commands.add(SimpleCommand(executionTask))
+        commands.add(SimpleCommand(executionTask, undoLabel.task()))
     }
 
-    infix fun reversal(unnecessary: UnnecessaryPlaceHolder) {
-        commands.add(SimpleCommand(executionTask))
+    infix fun reversal(@Suppress("UNUSED_PARAMETER") unnecessary: UnnecessaryPlaceHolder) {
+        commands.add(SimpleCommand(executionTask, NoTask))
     }
 
     enum class UnnecessaryPlaceHolder {
         unnecessary
+    }
+
+    private object NoTask: Task {
+        override fun execute() = TASK_SUCCEEDED
     }
 }

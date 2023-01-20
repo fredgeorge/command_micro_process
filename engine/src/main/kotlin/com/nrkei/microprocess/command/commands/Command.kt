@@ -9,14 +9,21 @@ package com.nrkei.microprocess.command.commands
 // Understands something that can be done (and undone)
 interface Command {
     fun execute(): ExecutionResult
+    fun undo(): ExecutionResult
     fun accept(visitor: CommandVisitor)
-}
-
-interface Task {
-    fun execute(): ExecutionResult
 }
 
 // Understands the outcome of Command Execution
 enum class ExecutionResult {
-    SUCCEEDED, FAILED, SUSPENDED
+    NOT_EXECUTED, SUCCEEDED, FAILED, SUSPENDED, REVERSED, REVERSAL_FAILED
+}
+
+// Understands a specific unit of work
+interface Task {
+    fun execute(): TaskResult
+}
+
+// Understands the outcome of Command Execution
+enum class TaskResult {
+    TASK_SUCCEEDED, TASK_FAILED, TASK_SUSPENDED
 }
