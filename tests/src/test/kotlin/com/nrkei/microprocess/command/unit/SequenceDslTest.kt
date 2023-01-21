@@ -77,4 +77,23 @@ internal class SequenceDslTest {
             assertEquals(1, TestAnalysis(command)[FAILED].size)
         }
     }
+
+    @Test fun `Compound sequence`() {
+        sequence {
+            first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            next perform SUCCESSFUL_TASK reversal unnecessary
+            next perform sequence {
+                first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+                next perform SUCCESSFUL_TASK reversal unnecessary
+                next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            }
+            next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+        }.also { command ->
+            assertEquals(6, TestAnalysis(command)[NOT_EXECUTED].size)
+            assertEquals(0, TestAnalysis(command)[SUCCEEDED].size)
+            assertEquals(SUCCEEDED, command.execute())
+            assertEquals(0, TestAnalysis(command)[NOT_EXECUTED].size)
+            assertEquals(6, TestAnalysis(command)[SUCCEEDED].size)
+        }
+    }
 }

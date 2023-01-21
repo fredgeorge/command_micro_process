@@ -10,7 +10,7 @@ import com.nrkei.microprocess.command.commands.*
 import com.nrkei.microprocess.command.commands.TaskResult.TASK_FAILED
 import com.nrkei.microprocess.command.commands.TaskResult.TASK_SUCCEEDED
 
-fun sequence(block: SequenceBuilder.() -> Unit) : Command =
+fun sequence(block: SequenceBuilder.() -> Unit) : SequenceCommand =
     SequenceBuilder()
         .also { it.block() }.result()
 
@@ -26,6 +26,10 @@ class SequenceBuilder {
 
     infix fun perform(executionLabel: TaskLabel) = this.also{
         executionTask = executionLabel.task()
+    }
+
+    infix fun perform(sequence: SequenceCommand) {
+        commands.add(sequence)
     }
 
     infix fun otherwise(undoLabel: TaskLabel) {
