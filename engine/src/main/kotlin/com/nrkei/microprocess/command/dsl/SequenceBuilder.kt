@@ -6,10 +6,8 @@
 
 package com.nrkei.microprocess.command.dsl
 
-import com.nrkei.microprocess.command.commands.Command
-import com.nrkei.microprocess.command.commands.SequenceCommand
-import com.nrkei.microprocess.command.commands.SimpleCommand
-import com.nrkei.microprocess.command.commands.Task
+import com.nrkei.microprocess.command.commands.*
+import com.nrkei.microprocess.command.commands.TaskResult.TASK_FAILED
 import com.nrkei.microprocess.command.commands.TaskResult.TASK_SUCCEEDED
 
 fun sequence(block: SequenceBuilder.() -> Unit) : Command =
@@ -34,15 +32,12 @@ class SequenceBuilder {
         commands.add(SimpleCommand(executionTask, undoLabel.task()))
     }
 
-    infix fun reversal(@Suppress("UNUSED_PARAMETER") unnecessary: UnnecessaryPlaceHolder) {
-        commands.add(SimpleCommand(executionTask, NoTask))
+    infix fun reversal(taskId: DefaultTask) {
+        commands.add(SimpleCommand(executionTask, taskId.task))
     }
 
-    enum class UnnecessaryPlaceHolder {
-        unnecessary
-    }
-
-    private object NoTask: Task {
-        override fun execute() = TASK_SUCCEEDED
+    enum class DefaultTask(internal val task: Task) {
+        unnecessary( object: Task { override fun execute() = TASK_SUCCEEDED }),
+        impossible( object: Task { override fun execute() = TASK_FAILED })
     }
 }

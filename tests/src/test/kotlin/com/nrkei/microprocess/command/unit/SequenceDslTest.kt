@@ -7,7 +7,8 @@
 package com.nrkei.microprocess.command.unit
 
 import com.nrkei.microprocess.command.commands.ExecutionResult.*
-import com.nrkei.microprocess.command.dsl.SequenceBuilder.UnnecessaryPlaceHolder.unnecessary
+import com.nrkei.microprocess.command.dsl.SequenceBuilder.DefaultTask.impossible
+import com.nrkei.microprocess.command.dsl.SequenceBuilder.DefaultTask.unnecessary
 import com.nrkei.microprocess.command.dsl.sequence
 import com.nrkei.microprocess.command.util.TestAnalysis
 import com.nrkei.microprocess.command.util.TestLabel.*
@@ -58,6 +59,20 @@ internal class SequenceDslTest {
             assertEquals(REVERSAL_FAILED, command.execute())
             assertEquals(0, TestAnalysis(command)[NOT_EXECUTED].size)
             assertEquals(2, TestAnalysis(command)[REVERSED].size)
+            assertEquals(1, TestAnalysis(command)[REVERSAL_FAILED].size)
+            assertEquals(1, TestAnalysis(command)[FAILED].size)
+        }
+    }
+
+    @Test fun `Reversal impossible`() {
+        sequence {
+            first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            next perform SUCCESSFUL_TASK reversal impossible
+            next perform FAILED_TASK otherwise SUCCESSFUL_RECOVERY
+        }.also { command ->
+            assertEquals(REVERSAL_FAILED, command.execute())
+            assertEquals(0, TestAnalysis(command)[NOT_EXECUTED].size)
+            assertEquals(1, TestAnalysis(command)[REVERSED].size)
             assertEquals(1, TestAnalysis(command)[REVERSAL_FAILED].size)
             assertEquals(1, TestAnalysis(command)[FAILED].size)
         }
