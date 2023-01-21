@@ -96,4 +96,41 @@ internal class SequenceDslTest {
             assertEquals(6, TestAnalysis(command)[SUCCEEDED].size)
         }
     }
+
+    @Test fun `Failure in subcommand sequence`() {
+        sequence {
+            first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            next perform SUCCESSFUL_TASK reversal unnecessary
+            next perform sequence {
+                first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+                next perform FAILED_TASK otherwise SUCCESSFUL_RECOVERY
+                next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            }
+            next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+        }.also { command ->
+            assertEquals(REVERSED, command.execute())
+            assertEquals(2, TestAnalysis(command)[NOT_EXECUTED].size)
+            assertEquals(3, TestAnalysis(command)[REVERSED].size)
+            assertEquals(1, TestAnalysis(command)[FAILED].size)
+        }
+    }
+
+    @Test fun `Failure after subcommand sequence`() {
+        sequence {
+            first perform SUCCESSFUL_TASK reversal unnecessary
+            next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+            next perform sequence {
+                first perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+                next perform SUCCESSFUL_TASK reversal impossible
+            }
+            next perform FAILED_TASK otherwise SUCCESSFUL_RECOVERY
+            next perform SUCCESSFUL_TASK otherwise SUCCESSFUL_RECOVERY
+        }.also { command ->
+            assertEquals(REVERSAL_FAILED, command.execute())
+            assertEquals(1, TestAnalysis(command)[NOT_EXECUTED].size)
+            assertEquals(3, TestAnalysis(command)[REVERSED].size)
+            assertEquals(1, TestAnalysis(command)[REVERSAL_FAILED].size)
+            assertEquals(1, TestAnalysis(command)[FAILED].size)
+        }
+    }
 }

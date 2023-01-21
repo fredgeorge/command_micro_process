@@ -52,8 +52,7 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
     interface State {
         val commandResult: ExecutionResult
         fun execute(command: SimpleCommand): ExecutionResult
-        fun undo(command: SimpleCommand): ExecutionResult =
-            throw IllegalStateException("Undo is not valid at this point")
+        fun undo(command: SimpleCommand): ExecutionResult = REVERSED
     }
 
     object NotExecuted : State {
@@ -75,6 +74,8 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
     object Suspended : State {
         override val commandResult = SUSPENDED
         override fun execute(command: SimpleCommand) = command.executeTask()
+        override fun undo(command: SimpleCommand) =
+            throw IllegalStateException("Attempting to undo a Suspended command")
     }
 
     object Reversed : State {
@@ -85,5 +86,6 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
     object ReversalFailed : State {
         override val commandResult = REVERSAL_FAILED
         override fun execute(command: SimpleCommand) = FAILED
+        override fun undo(command: SimpleCommand) = REVERSAL_FAILED
     }
 }

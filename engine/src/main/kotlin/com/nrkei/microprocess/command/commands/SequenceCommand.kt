@@ -41,7 +41,7 @@ class SequenceCommand internal constructor(private val commands: List<Command>) 
     }
 
     override fun undo() =
-        if (commands.reversed().all { it.undo() == REVERSED }) REVERSED
+        if (commands.reversed().map { it.undo() }.all { it == REVERSED }) REVERSED
         else REVERSAL_FAILED
 
     override fun accept(visitor: CommandVisitor) {
