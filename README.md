@@ -72,4 +72,9 @@ with the last Command to successfully execute.
 
 For inspection, analysis, persistence, and other functions against a 
 Command hierarchy, we use a Visitor Pattern (GoF). In testing, the 
-visitor can sweep through the hierarchy and collect state.
+visitor can sweep through the hierarchy and collect state for validation
+assertion.
+
+Tasks in general will need to share information. For example, the result
+of one task is necessary to feed another task. To support this, we use
+a Collecting Parameter Pattern (C2.com) called a Context.
