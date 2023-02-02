@@ -60,4 +60,16 @@ internal class ContextTest {
             assertEquals(450_000.0, c double WEALTH)
         }
     }
+
+    @Test fun `ignore labels that aren't specified`() {
+        Context().also { subContext ->
+            subContext[AGE] = 23
+            subContext[SPOUSE] = "Harold"
+            c.extract(SPOUSE) from subContext
+            assertEquals(45, c int AGE)
+            assertEquals("Jennifer", c string NAME)
+            assertEquals("Harold", c string SPOUSE)
+            assertEquals(450_000.0, c double WEALTH)
+        }
+    }
 }
