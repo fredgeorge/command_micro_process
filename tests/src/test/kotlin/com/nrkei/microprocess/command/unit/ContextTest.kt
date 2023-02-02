@@ -50,6 +50,14 @@ internal class ContextTest {
     }
 
     @Test fun `adopt changes from sub-context`() {
-
+        Context().also { subContext ->
+            subContext[AGE] = 23
+            subContext[SPOUSE] = "Harold"
+            c.extract(AGE, SPOUSE) from subContext
+            assertEquals(23, c int AGE)
+            assertEquals("Jennifer", c string NAME)
+            assertEquals("Harold", c string SPOUSE)
+            assertEquals(450_000.0, c double WEALTH)
+        }
     }
 }

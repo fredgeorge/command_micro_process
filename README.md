@@ -70,6 +70,19 @@ A Command can succeed, fail, or be suspended. If a Command in a sequence
 fails, all prior Commands in the sequence will be _undone_, starting
 with the last Command to successfully execute.
 
+We want to further separate behavior from flow. Composite Commands
+capture the flow. The behavior is delegated for primitive Commands to
+a task. An application designer can therefore:
+
+- Modify the flow without needing to change the behavior, or
+- Modify behavior without impacting the flow.
+
+If your domain requires customization, one or both of these will
+prove useful. A catalog of behaviors can be established, and subsets
+used for a client. Conversely, if one client has a different flow of 
+work and approvals, that can be captured by simply altering the
+Commands.
+
 For inspection, analysis, persistence, and other functions against a 
 Command hierarchy, we use a Visitor Pattern (GoF). In testing, the 
 visitor can sweep through the hierarchy and collect state for validation
@@ -77,4 +90,11 @@ assertion.
 
 Tasks in general will need to share information. For example, the result
 of one task is necessary to feed another task. To support this, we use
-a Collecting Parameter Pattern (C2.com) called a Context.
+a Collecting Parameter Pattern (C2.com) called a Context. Sharing data
+through a Context is a bit of an anti-pattern; it can become a dumping 
+ground (it's just a big map), create excessive coupling, and compromise
+the granularity we are seeking. To mitigate this, each task must declare
+the information it needs from the overall Context, and which information
+it will contribute (add or change) to the overall Context). This enables
+some straightforward static analysis of usage patterns (not implemented
+here).
