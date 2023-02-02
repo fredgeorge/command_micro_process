@@ -34,12 +34,12 @@ class Context internal constructor(private val parameters: MutableMap<ParameterL
 
     fun subset(vararg labels: ParameterLabel) = subset(labels.toList())
 
-    private fun subset(labels: List<ParameterLabel>) =
+    internal fun subset(labels: List<ParameterLabel>) =
         Context(parameters.filter { it.key in labels }.toMutableMap())
 
     fun extract(vararg labels: ParameterLabel) = extract(labels.toList())
 
-    private fun extract(labels: List<ParameterLabel>) = ExtractionParameters(labels)
+    internal fun extract(labels: List<ParameterLabel>) = ExtractionParameters(labels)
 
     inner class ExtractionParameters(private val extractionLabels: List<ParameterLabel>) {
         infix fun from(subContext: Context) {

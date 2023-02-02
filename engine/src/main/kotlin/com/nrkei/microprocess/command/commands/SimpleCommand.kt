@@ -19,11 +19,14 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
 
     private fun executeTask(c: Context) =
         try {
-            executionTask.execute(c).also { result ->
-                state = when (result) {
-                    TASK_SUCCEEDED -> Successful
-                    TASK_FAILED -> Failed
-                    TASK_SUSPENDED -> Suspended
+            c.subset(executionTask.referencedLabels).also { subContext ->
+                executionTask.execute(subContext).also { result ->
+                    c.extract(executionTask.updatedLabels) from subContext
+                    state = when (result) {
+                        TASK_SUCCEEDED -> Successful
+                        TASK_FAILED -> Failed
+                        TASK_SUSPENDED -> Suspended
+                    }
                 }
             }
             state.commandResult
@@ -34,10 +37,12 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
 
     private fun undoTask(c: Context) =
         try {
-            state = when (undoTask.execute(c)) {
-                TASK_SUCCEEDED -> Reversed
-                TASK_FAILED -> ReversalFailed
-                TASK_SUSPENDED -> ReversalFailed  // Maybe support this?
+            c.subset(executionTask.referencedLabels).also { subContext ->
+                state = when (undoTask.execute(c).also { c.extract(executionTask.updatedLabels) from subContext }) {
+                    TASK_SUCCEEDED -> Reversed
+                    TASK_FAILED -> ReversalFailed
+                    TASK_SUSPENDED -> ReversalFailed  // Maybe support this?
+                }
             }
             state.commandResult
         } catch (e: Exception) {

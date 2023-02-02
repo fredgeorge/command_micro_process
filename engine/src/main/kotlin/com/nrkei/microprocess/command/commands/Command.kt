@@ -20,6 +20,8 @@ enum class ExecutionResult {
 
 // Understands a specific unit of work
 interface Task {
+    val referencedLabels get() = emptyList<ParameterLabel>()
+    val updatedLabels get() = emptyList<ParameterLabel>()
     fun execute(c: Context): TaskResult
 }
 
