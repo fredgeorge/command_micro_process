@@ -72,4 +72,11 @@ internal class ContextTest {
             assertEquals(450_000.0, c double WEALTH)
         }
     }
+
+    @Test fun `cannot extract data that doesn't exist`() {
+        Context().also { subContext ->
+            subContext[AGE] = 23
+            assertThrows<IllegalArgumentException> { c.extract(AGE, SPOUSE) from subContext }
+        }
+    }
 }
