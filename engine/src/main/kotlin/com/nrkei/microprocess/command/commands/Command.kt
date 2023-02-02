@@ -8,8 +8,8 @@ package com.nrkei.microprocess.command.commands
 
 // Understands something that can be done (and undone)
 interface Command {
-    fun execute(): ExecutionResult
-    fun undo(): ExecutionResult
+    fun execute(c: Context): ExecutionResult
+    fun undo(c: Context): ExecutionResult
     fun accept(visitor: CommandVisitor)
 }
 
@@ -20,7 +20,7 @@ enum class ExecutionResult {
 
 // Understands a specific unit of work
 interface Task {
-    fun execute(): TaskResult
+    fun execute(c: Context): TaskResult
 }
 
 // Understands the outcome of Command Execution

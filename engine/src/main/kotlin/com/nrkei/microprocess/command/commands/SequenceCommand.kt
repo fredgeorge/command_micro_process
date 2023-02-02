@@ -11,37 +11,37 @@ import com.nrkei.microprocess.command.commands.ExecutionResult.*
 // Understands a process involving multiple steps executed in order
 class SequenceCommand internal constructor(private val commands: List<Command>) : Command {
 
-    override fun execute(): ExecutionResult {
-        return execute(commands.toMutableList())
+    override fun execute(c: Context): ExecutionResult {
+        return execute(c, commands.toMutableList())
     }
 
     // Recursion: Process first command, then recurse with remaining
-    private fun execute(commands: MutableList<Command>): ExecutionResult {
+    private fun execute(c: Context, commands: MutableList<Command>): ExecutionResult {
         if (commands.isEmpty()) return SUCCEEDED
         commands.removeAt(0).also { currentCommand ->
-            return when (currentCommand.execute()) {
+            return when (currentCommand.execute(c)) {
                 NOT_EXECUTED -> throw IllegalStateException("Invalid execution result of NOT_EXECUTED for current command")
                 SUCCEEDED -> {
-                    when (execute(commands)) {
+                    when (execute(c, commands)) {
                         NOT_EXECUTED -> throw IllegalStateException("Invalid execution result of NOT_EXECUTED for children")
                         SUCCEEDED -> SUCCEEDED
-                        FAILED -> currentCommand.undo()
+                        FAILED -> currentCommand.undo(c)
                         SUSPENDED -> SUSPENDED
-                        REVERSED -> currentCommand.undo()
-                        REVERSAL_FAILED -> REVERSAL_FAILED.also { currentCommand.undo() }
+                        REVERSED -> currentCommand.undo(c)
+                        REVERSAL_FAILED -> REVERSAL_FAILED.also { currentCommand.undo(c) }
                     }
                 }
                 FAILED -> FAILED
                 SUSPENDED -> SUSPENDED
-                REVERSED -> currentCommand.undo()
+                REVERSED -> currentCommand.undo(c)
                 // SequenceCommand fails reversal if any subcommand reversal fails
-                REVERSAL_FAILED -> REVERSAL_FAILED.also { currentCommand.undo() }
+                REVERSAL_FAILED -> REVERSAL_FAILED.also { currentCommand.undo(c) }
             }
         }
     }
 
-    override fun undo() =
-        if (commands.reversed().map { it.undo() }.all { it == REVERSED }) REVERSED
+    override fun undo(c: Context) =
+        if (commands.reversed().map { it.undo(c) }.all { it == REVERSED }) REVERSED
         else REVERSAL_FAILED
 
     override fun accept(visitor: CommandVisitor) {

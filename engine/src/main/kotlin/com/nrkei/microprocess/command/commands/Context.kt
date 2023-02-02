@@ -9,19 +9,22 @@ package com.nrkei.microprocess.command.commands
 // Understands information to be shared among Tasks
 class Context internal constructor(private val parameters: MutableMap<ParameterLabel, Any> = mutableMapOf()) {
 
-    constructor(): this(mutableMapOf())
+    constructor() : this(mutableMapOf())
 
     infix fun int(label: ParameterLabel) = parameters.get(label)
         ?.let { it as Int }
-        ?: throw IllegalArgumentException ("Integer parameter ${label.name} does not exist (yet)")
+        ?: throw IllegalArgumentException(errorText(label, "Integer"))
 
     infix fun string(label: ParameterLabel) = parameters.get(label)
         ?.let { it as String }
-        ?: throw IllegalArgumentException ("String parameter ${label.name} does not exist (yet)")
+        ?: throw IllegalArgumentException(errorText(label, "String"))
 
     infix fun double(label: ParameterLabel) = parameters.get(label)
         ?.let { it as Double }
-        ?: throw IllegalArgumentException ("Double parameter ${label.name} does not exist (yet)")
+        ?: throw IllegalArgumentException(errorText(label, "Double"))
+
+    private fun errorText(label: ParameterLabel, dataType: String) =
+        "$dataType parameter ${label.name} does not exist (yet); did you forget to declare its access in the Task?"
 
     operator fun set(label: ParameterLabel, value: Int) = parameters.put(label, value)
 
@@ -32,7 +35,7 @@ class Context internal constructor(private val parameters: MutableMap<ParameterL
     fun subset(vararg labels: ParameterLabel) = subset(labels.toList())
 
     private fun subset(labels: List<ParameterLabel>) =
-        Context(parameters.filter{it.key in labels}.toMutableMap())
+        Context(parameters.filter { it.key in labels }.toMutableMap())
 
     fun extract(vararg labels: ParameterLabel) = extract(labels.toList())
 
@@ -44,7 +47,9 @@ class Context internal constructor(private val parameters: MutableMap<ParameterL
                 this@Context.parameters.put(
                     label,
                     subContext.parameters[label]
-                        ?: throw IllegalArgumentException("Parameter ${label.name} does not exist in sub-Context")) }
+                        ?: throw IllegalArgumentException("Parameter ${label.name} does not exist in sub-Context")
+                )
+            }
         }
     }
 }

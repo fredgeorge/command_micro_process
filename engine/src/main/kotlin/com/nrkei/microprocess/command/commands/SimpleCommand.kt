@@ -13,13 +13,13 @@ import com.nrkei.microprocess.command.commands.TaskResult.*
 class SimpleCommand internal constructor(private val executionTask: Task, private val undoTask: Task) : Command {
     private var state: State = NotExecuted
 
-    override fun execute() = state.execute(this)
+    override fun execute(c: Context) = state.execute(c, this)
 
-    override fun undo() = state.undo(this)
+    override fun undo(c: Context) = state.undo(c, this)
 
-    private fun executeTask() =
+    private fun executeTask(c: Context) =
         try {
-            executionTask.execute().also { result ->
+            executionTask.execute(c).also { result ->
                 state = when (result) {
                     TASK_SUCCEEDED -> Successful
                     TASK_FAILED -> Failed
@@ -32,9 +32,9 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
             FAILED
         }
 
-    private fun undoTask() =
+    private fun undoTask(c: Context) =
         try {
-            state = when (undoTask.execute()) {
+            state = when (undoTask.execute(c)) {
                 TASK_SUCCEEDED -> Reversed
                 TASK_FAILED -> ReversalFailed
                 TASK_SUSPENDED -> ReversalFailed  // Maybe support this?
@@ -51,41 +51,41 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
 
     interface State {
         val commandResult: ExecutionResult
-        fun execute(command: SimpleCommand): ExecutionResult
-        fun undo(command: SimpleCommand): ExecutionResult = REVERSED
+        fun execute(c: Context, command: SimpleCommand): ExecutionResult
+        fun undo(c: Context, command: SimpleCommand): ExecutionResult = REVERSED
     }
 
     object NotExecuted : State {
         override val commandResult = NOT_EXECUTED
-        override fun execute(command: SimpleCommand) = command.executeTask()
+        override fun execute(c: Context, command: SimpleCommand) = command.executeTask(c)
     }
 
     object Successful : State {
         override val commandResult = SUCCEEDED
-        override fun execute(command: SimpleCommand) = SUCCEEDED
-        override fun undo(command: SimpleCommand) = command.undoTask()
+        override fun execute(c: Context, command: SimpleCommand) = SUCCEEDED
+        override fun undo(c: Context, command: SimpleCommand) = command.undoTask(c)
     }
 
     object Failed : State {
         override val commandResult = FAILED
-        override fun execute(command: SimpleCommand) = FAILED
+        override fun execute(c: Context, command: SimpleCommand) = FAILED
     }
 
     object Suspended : State {
         override val commandResult = SUSPENDED
-        override fun execute(command: SimpleCommand) = command.executeTask()
-        override fun undo(command: SimpleCommand) =
+        override fun execute(c: Context, command: SimpleCommand) = command.executeTask(c)
+        override fun undo(c: Context, command: SimpleCommand) =
             throw IllegalStateException("Attempting to undo a Suspended command")
     }
 
     object Reversed : State {
         override val commandResult = REVERSED
-        override fun execute(command: SimpleCommand) = FAILED
+        override fun execute(c: Context, command: SimpleCommand) = FAILED
     }
 
     object ReversalFailed : State {
         override val commandResult = REVERSAL_FAILED
-        override fun execute(command: SimpleCommand) = FAILED
-        override fun undo(command: SimpleCommand) = REVERSAL_FAILED
+        override fun execute(c: Context, command: SimpleCommand) = FAILED
+        override fun undo(c: Context, command: SimpleCommand) = REVERSAL_FAILED
     }
 }

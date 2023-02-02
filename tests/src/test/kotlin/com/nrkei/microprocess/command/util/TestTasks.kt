@@ -6,6 +6,7 @@
 
 package com.nrkei.microprocess.command.util
 
+import com.nrkei.microprocess.command.commands.Context
 import com.nrkei.microprocess.command.commands.Task
 import com.nrkei.microprocess.command.commands.TaskResult
 import com.nrkei.microprocess.command.commands.TaskResult.*
@@ -13,12 +14,12 @@ import com.nrkei.microprocess.command.dsl.TaskLabel
 
 internal class TestTask(private val status: TaskResult) : Task {
     internal var executionCount = 0
-    override fun execute() = status.also { executionCount += 1 }
+    override fun execute(c: Context) = status.also { executionCount += 1 }
 }
 
 internal object CrashingTask : Task {
     internal var executionCount = 0
-    override fun execute(): Nothing {
+    override fun execute(c: Context): Nothing {
         executionCount += 1
         throw IllegalArgumentException("deliberate crash")
     }

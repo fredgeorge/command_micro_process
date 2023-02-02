@@ -41,7 +41,7 @@ class SequenceBuilder {
     }
 
     enum class DefaultTask(internal val task: Task) {
-        unnecessary( object: Task { override fun execute() = TASK_SUCCEEDED }),
-        impossible( object: Task { override fun execute() = TASK_FAILED })
+        unnecessary( object: Task { override fun execute(c: Context) = TASK_SUCCEEDED }),
+        impossible( object: Task { override fun execute(c: Context) = TASK_FAILED })
     }
 }
