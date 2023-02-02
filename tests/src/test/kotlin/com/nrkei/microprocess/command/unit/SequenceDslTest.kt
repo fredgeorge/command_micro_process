@@ -12,7 +12,7 @@ import com.nrkei.microprocess.command.dsl.SequenceBuilder.DefaultTask.impossible
 import com.nrkei.microprocess.command.dsl.SequenceBuilder.DefaultTask.unnecessary
 import com.nrkei.microprocess.command.dsl.sequence
 import com.nrkei.microprocess.command.util.TestAnalysis
-import com.nrkei.microprocess.command.util.TestLabel.*
+import com.nrkei.microprocess.command.util.TestTaskLabel.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test

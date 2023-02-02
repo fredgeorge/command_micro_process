@@ -11,15 +11,15 @@ class Context internal constructor(private val parameters: MutableMap<ParameterL
 
     constructor() : this(mutableMapOf())
 
-    infix fun int(label: ParameterLabel) = parameters.get(label)
+    infix fun int(label: ParameterLabel) = parameters[label]
         ?.let { it as Int }
         ?: throw IllegalArgumentException(errorText(label, "Integer"))
 
-    infix fun string(label: ParameterLabel) = parameters.get(label)
+    infix fun string(label: ParameterLabel) = parameters[label]
         ?.let { it as String }
         ?: throw IllegalArgumentException(errorText(label, "String"))
 
-    infix fun double(label: ParameterLabel) = parameters.get(label)
+    infix fun double(label: ParameterLabel) = parameters[label]
         ?.let { it as Double }
         ?: throw IllegalArgumentException(errorText(label, "Double"))
 
@@ -44,11 +44,8 @@ class Context internal constructor(private val parameters: MutableMap<ParameterL
     inner class ExtractionParameters(private val extractionLabels: List<ParameterLabel>) {
         infix fun from(subContext: Context) {
             extractionLabels.forEach { label ->
-                this@Context.parameters.put(
-                    label,
-                    subContext.parameters[label]
-                        ?: throw IllegalArgumentException("Parameter ${label.name} does not exist in sub-Context")
-                )
+                this@Context.parameters[label] = subContext.parameters[label]
+                    ?: throw IllegalArgumentException("Parameter ${label.name} does not exist in sub-Context")
             }
         }
     }

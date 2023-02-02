@@ -10,7 +10,7 @@ import com.nrkei.microprocess.command.commands.Context
 import com.nrkei.microprocess.command.commands.ExecutionResult.*
 import com.nrkei.microprocess.command.dsl.TaskLabel
 import com.nrkei.microprocess.command.dsl.sequence
-import com.nrkei.microprocess.command.util.TestLabel.*
+import com.nrkei.microprocess.command.util.TestTaskLabel.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
