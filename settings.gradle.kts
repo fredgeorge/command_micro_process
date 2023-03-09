@@ -5,4 +5,4 @@
  */
  
 rootProject.name = "command_micro_process"
-include("engine", "tests")
+include("engine", "tests", "persistence")
