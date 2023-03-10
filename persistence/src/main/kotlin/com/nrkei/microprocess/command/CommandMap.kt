@@ -6,6 +6,7 @@
 
 package com.nrkei.microprocess.command
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.nrkei.microprocess.command.commands.*
 
 class CommandMap(private val command: SequenceCommand) : CommandVisitor {
@@ -20,6 +21,8 @@ class CommandMap(private val command: SequenceCommand) : CommandVisitor {
             "children" to subMaps
         ).toMap()
     }
+
+    fun toJson(): String = ObjectMapper().writeValueAsString(result())
 
     override fun preVisit(command: SequenceCommand, subCommandCount: Int) {
         state.preVisit(this, command, subCommandCount)

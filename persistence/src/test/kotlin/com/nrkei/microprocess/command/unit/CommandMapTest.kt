@@ -26,6 +26,7 @@ internal class CommandMapTest {
         }.also { command ->
             command.execute(Context())
             println(CommandMap(command).result())
+            println(CommandMap(command).toJson())
         }
     }
 
@@ -42,6 +43,7 @@ internal class CommandMapTest {
         }.also { command ->
             command.execute(Context())
             println(CommandMap(command).result())
+            println(CommandMap(command).toJson())
         }
     }
 }
