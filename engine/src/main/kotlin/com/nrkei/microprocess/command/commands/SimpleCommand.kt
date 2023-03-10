@@ -51,7 +51,7 @@ class SimpleCommand internal constructor(private val executionTask: Task, privat
         }
 
     override fun accept(visitor: CommandVisitor) {
-        visitor.visit(this, state.commandResult, executionTask)
+        visitor.visit(this, state.commandResult, executionTask, undoTask)
     }
 
     interface State {

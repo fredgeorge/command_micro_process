@@ -6,14 +6,19 @@
 
 package com.nrkei.microprocess.command
 
-import com.nrkei.microprocess.command.commands.CommandVisitor
-import com.nrkei.microprocess.command.commands.SequenceCommand
+import com.nrkei.microprocess.command.commands.*
 
-class CommandMap(command: SequenceCommand) : CommandVisitor {
+class CommandMap(private val command: SequenceCommand) : CommandVisitor {
     private var state: State = Process
-    private lateinit var currentCommand: SequenceCommand
-    init {
+    private lateinit var subCommand: SequenceCommand
+    private val subMaps = mutableListOf<Map<String, Any>>()
+
+    fun result(): Map<String, Any> {
         command.accept(this)
+        return listOf(
+            "type" to command.javaClass.simpleName,
+            "children" to subMaps
+        ).toMap()
     }
 
     override fun preVisit(command: SequenceCommand, subCommandCount: Int) {
@@ -24,19 +29,48 @@ class CommandMap(command: SequenceCommand) : CommandVisitor {
         state.postVisit(this, command)
     }
 
+    override fun visit(command: SimpleCommand, state: ExecutionResult, executionTask: Task, undoTask: Task) {
+        this.state.visit(this, command, state, executionTask, undoTask)
+    }
+
     private interface State {
         fun preVisit(commandMap: CommandMap, command: SequenceCommand, subCommandCount: Int)
         fun postVisit(commandMap: CommandMap, command: SequenceCommand)
+        fun visit(
+            commandMap: CommandMap,
+            command: SimpleCommand,
+            state: ExecutionResult,
+            executionTask: Task,
+            undoTask: Task
+        )
     }
 
     internal object Process: State {
         override fun preVisit(commandMap: CommandMap, command: SequenceCommand, subCommandCount: Int) {
-            commandMap.currentCommand = command
-            commandMap.state = Ignore
+            if (command != commandMap.command){
+                commandMap.subCommand = command
+                commandMap.state = Ignore
+                commandMap.subMaps.add(CommandMap(command).result())
+            }
         }
 
         override fun postVisit(commandMap: CommandMap, command: SequenceCommand) {
-            TODO("Not yet implemented")
+            // Nothing to do here
+        }
+
+        override fun visit(
+            commandMap: CommandMap,
+            command: SimpleCommand,
+            state: ExecutionResult,
+            executionTask: Task,
+            undoTask: Task
+        ) {
+            commandMap.subMaps.add(listOf(
+                "type" to command.javaClass.simpleName,
+                "state" to state.name,
+                "executionTask" to executionTask.javaClass.simpleName,
+                "undoTask" to undoTask.javaClass.simpleName,
+            ).toMap())
         }
     }
 
@@ -46,8 +80,18 @@ class CommandMap(command: SequenceCommand) : CommandVisitor {
         }
 
         override fun postVisit(commandMap: CommandMap, command: SequenceCommand) {
-            if(commandMap.currentCommand != command) return
+            if(commandMap.subCommand != command) return
             commandMap.state = Process
+        }
+
+        override fun visit(
+            commandMap: CommandMap,
+            command: SimpleCommand,
+            state: ExecutionResult,
+            executionTask: Task,
+            undoTask: Task
+        ) {
+            // Ignore - handled in recursive invocation
         }
     }
 }

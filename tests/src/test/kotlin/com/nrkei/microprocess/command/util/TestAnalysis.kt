@@ -14,7 +14,7 @@ internal class TestAnalysis(command: Command) : CommandVisitor {
         command.accept(this)
     }
 
-    override fun visit(command: SimpleCommand, state: ExecutionResult, executionTask: Task) {
+    override fun visit(command: SimpleCommand, state: ExecutionResult, executionTask: Task, undoTask: Task) {
         tasks.putIfAbsent(state, mutableListOf())
         tasks[state]?.add(executionTask)
     }
