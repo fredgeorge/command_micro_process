@@ -27,10 +27,10 @@ Adapt as necessary for your environment.
 
 Note: This implementation was setup to use:
 
-- IntelliJ 2023.3.3 (Ultimate Edition)
-- Kotlin 1.8.22
+- IntelliJ 2023.3.6 (Ultimate Edition)
+- Kotlin 1.9.23
 - Java SDK 21 (Oracle)
-- Gradle 8.5
+- Gradle 8.7
 - JUnit 5.10.1 for testing
 
 Open the reference code:
