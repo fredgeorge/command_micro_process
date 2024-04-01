@@ -32,6 +32,7 @@ Note: This implementation was setup to use:
 - Java SDK 21 (Oracle)
 - Gradle 8.7
 - JUnit 5.10.2 for testing
+- Jackson for Kotlin 2.17.0
 
 Open the reference code:
 

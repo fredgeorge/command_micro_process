@@ -32,7 +32,7 @@ dependencies {
 	testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
 
     // Need Jackson for JSON support
-    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.14.2")
+    implementation("com.fasterxml.jackson.module", "jackson-module-kotlin", "2.17.0")
 }
 
 tasks.test {
