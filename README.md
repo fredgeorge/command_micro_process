@@ -31,7 +31,7 @@ Note: This implementation was setup to use:
 - Kotlin 1.9.23
 - Java SDK 21 (Oracle)
 - Gradle 8.7
-- JUnit 5.10.1 for testing
+- JUnit 5.10.2 for testing
 
 Open the reference code:
 
