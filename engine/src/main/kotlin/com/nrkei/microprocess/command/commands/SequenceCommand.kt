@@ -33,9 +33,9 @@ class SequenceCommand internal constructor(private val commands: List<Command>) 
                 }
                 FAILED -> FAILED
                 SUSPENDED -> SUSPENDED
-                REVERSED -> currentCommand.undo(c)
+                REVERSED -> REVERSED
                 // SequenceCommand fails reversal if any subcommand reversal fails
-                REVERSAL_FAILED -> REVERSAL_FAILED.also { currentCommand.undo(c) }
+                REVERSAL_FAILED -> REVERSAL_FAILED
             }
         }
     }
